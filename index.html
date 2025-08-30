@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strategic Growth Projector</title>
     <style>
-        /* --- CORE STYLES & AESTHETICS (VALERIAN STANDARD V3) --- */
+        /* --- CORE STYLES & AESTHETICS (VALERIAN STANDARD V4) --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
 
         :root {
@@ -20,68 +20,42 @@
             --transition-speed: 0.5s;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            height: 100%;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            overflow: hidden;
+            height: 100%; font-family: 'Inter', sans-serif;
+            background-color: var(--background-color); color: var(--text-primary);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 16px; overflow: hidden;
         }
 
         /* --- MAIN CONSOLE STYLING --- */
         .chancellor-console {
-            width: 100%;
-            max-width: 950px;
-            height: 650px; /* Define a fixed height for consistent layout */
-            max-height: 95vh;
-            background: var(--console-background);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            width: 100%; max-width: 950px;
+            height: 680px; /* Define a fixed height for consistent layout */
+            max-height: 95vh; background: var(--console-background);
+            border: 1px solid var(--border-color); border-radius: 12px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            padding: 40px;
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 40px;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(20px);
+            padding: 40px; display: grid;
+            grid-template-columns: 1fr 1.5fr; gap: 40px;
+            overflow: hidden; opacity: 0; transform: translateY(20px);
             animation: fadeInConsole 0.8s ease-out forwards;
         }
 
-        @keyframes fadeInConsole {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInConsole { to { opacity: 1; transform: translateY(0); } }
 
         /* --- INPUTS & CONTROLS SECTION --- */
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
+        .controls { display: flex; flex-direction: column; gap: 25px; }
         .form-group label {
             font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);
             margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
         }
-
         .input-wrapper { position: relative; }
-
         .input-wrapper .symbol {
             position: absolute; left: 15px; top: 50%;
             transform: translateY(-50%); color: var(--text-secondary);
             font-weight: 500; pointer-events: none;
         }
-        
         .input-field {
             width: 100%; background: var(--input-background);
             border: 1px solid var(--border-color); border-radius: 8px;
@@ -89,62 +63,53 @@
             font-size: 1.1rem; font-weight: 500; outline: none;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-        
         .input-field.percent-input { padding-left: 15px; padding-right: 35px; }
-
         .input-wrapper .percent-symbol {
             position: absolute; right: 15px; top: 50%;
             transform: translateY(-50%); color: var(--text-secondary); font-weight: 500;
         }
-
         .input-field:focus {
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 3px rgba(0, 184, 255, 0.2);
         }
 
-        /* --- RESULTS & DISPLAY SECTION --- */
+        /* --- SCROLLING FIX: CSS GRID IMPLEMENTATION --- */
         .display-panel {
-            display: flex;
-            flex-direction: column;
-            border-left: 1px solid var(--border-color);
-            padding-left: 40px;
+            display: grid; /* Use Grid for explicit layout control */
+            grid-template-rows: auto auto auto 1fr; /* Rows for each section, last one fills space */
+            gap: 20px; /* Space between grid rows */
+            border-left: 1px solid var(--border-color); padding-left: 40px;
             opacity: 0.3; transform: translateY(10px);
             transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+            overflow: hidden; /* Prevent parent from overflowing */
         }
-        
         .display-panel.active { opacity: 1; transform: translateY(0); }
 
-        .primary-result { margin-bottom: 20px; }
         .primary-result .label { font-size: 1rem; color: var(--text-secondary); margin-bottom: 5px; }
         .primary-result .value { font-size: 5.5rem; font-weight: 900; color: var(--accent-primary); line-height: 1; }
         
-        .tertiary-result { margin-bottom: 20px; }
         .tertiary-result .label { font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
         .tertiary-result .value { font-size: 2.5rem; font-weight: 700; color: var(--accent-secondary); line-height: 1.1; }
         .tertiary-result .value .usd-value { font-size: 1.25rem; color: var(--text-secondary); margin-left: 10px; }
 
-        .secondary-result { margin-bottom: 20px; }
         .secondary-result .label { font-size: 0.9rem; color: var(--text-secondary); }
         .secondary-result .value { font-size: 1.5rem; color: var(--accent-secondary); font-weight: 700; margin-left: 10px; }
 
-        /* --- SCROLLING FIX & BREAKDOWN STYLING --- */
         .bet-breakdown-wrapper {
-            flex-grow: 1; /* Allow wrapper to fill available vertical space */
             display: flex; flex-direction: column;
-            min-height: 0; /* Critical for flexbox scrolling context */
+            min-height: 0; /* Critical for child elements to respect this container's bounds */
         }
 
         .bet-breakdown-wrapper .label {
             font-size: 0.9rem; color: var(--text-secondary);
             padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0; /* Prevent label from shrinking */
+            flex-shrink: 0;
         }
 
         #betBreakdown {
             list-style: none;
             overflow-y: auto; /* Enable scrolling on this element */
-            flex-grow: 1; /* Allow list to take up the space calculated by the wrapper */
-            padding-right: 15px;
+            padding-right: 15px; /* Space for scrollbar */
         }
 
         #betBreakdown li {
@@ -153,7 +118,6 @@
             opacity: 0; transform: translateX(15px);
             animation: listItemFadeIn 0.5s ease forwards;
         }
-
         @keyframes listItemFadeIn { to { opacity: 1; transform: translateX(0); } }
         
         #betBreakdown li .bet-num { color: var(--text-secondary); }
@@ -228,18 +192,15 @@
         displayPanel.classList.add('active');
         const rate = percentIncrease / 100;
 
-        // Calculate bets to target
         let betsToTarget = (currentAmount < targetAmount) ? Math.ceil(Math.log(targetAmount / currentAmount) / Math.log(1 + rate)) : 0;
         totalBetsDisplay.textContent = isFinite(betsToTarget) ? betsToTarget : '...';
 
-        // Calculate next profit
         const nextProfitMbtc = currentAmount * rate;
         const nextProfitUsd = nextProfitMbtc * (btcPrice / 1000);
         const formattedProfitMbtc = nextProfitMbtc.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const formattedProfitUsd = nextProfitUsd.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
         nextProfitDisplay.innerHTML = `${formattedProfitMbtc} mBTC <span class="usd-value">${formattedProfitUsd}</span>`;
 
-        // Calculate bets won
         let betsWon = (startAmount > 0 && currentAmount > startAmount) ? Math.round(Math.log(currentAmount / startAmount) / Math.log(1 + rate)) : 0;
         betsWonDisplay.textContent = isFinite(betsWon) ? betsWon : '0';
 
@@ -273,7 +234,7 @@
     function resetDisplays() {
         displayPanel.classList.remove('active');
         totalBetsDisplay.textContent = '...';
-        nextProfitDisplay.textContent = '...';
+        nextProfitDisplay.innerHTML = '...';
         betsWonDisplay.textContent = '...';
         betBreakdownList.innerHTML = '';
     }
