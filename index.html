@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strategic Growth Projector</title>
     <style>
-        /* --- CORE STYLES & AESTHETICS (VALERIAN STANDARD V2) --- */
+        /* --- CORE STYLES & AESTHETICS (VALERIAN STANDARD V3) --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
 
         :root {
@@ -42,7 +42,7 @@
         .chancellor-console {
             width: 100%;
             max-width: 950px;
-            height: auto;
+            height: 650px; /* Define a fixed height for consistent layout */
             max-height: 95vh;
             background: var(--console-background);
             border: 1px solid var(--border-color);
@@ -59,10 +59,7 @@
         }
 
         @keyframes fadeInConsole {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* --- INPUTS & CONTROLS SECTION --- */
@@ -73,54 +70,31 @@
         }
 
         .form-group label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
         }
 
-        .input-wrapper {
-            position: relative;
-        }
+        .input-wrapper { position: relative; }
 
         .input-wrapper .symbol {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-weight: 500;
-            pointer-events: none;
+            position: absolute; left: 15px; top: 50%;
+            transform: translateY(-50%); color: var(--text-secondary);
+            font-weight: 500; pointer-events: none;
         }
         
         .input-field {
-            width: 100%;
-            background: var(--input-background);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            padding-left: 35px;
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            font-weight: 500;
-            outline: none;
+            width: 100%; background: var(--input-background);
+            border: 1px solid var(--border-color); border-radius: 8px;
+            padding: 15px; padding-left: 35px; color: var(--text-primary);
+            font-size: 1.1rem; font-weight: 500; outline: none;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         
-        .input-field.percent-input {
-            padding-left: 15px;
-            padding-right: 35px;
-        }
+        .input-field.percent-input { padding-left: 15px; padding-right: 35px; }
 
         .input-wrapper .percent-symbol {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-weight: 500;
+            position: absolute; right: 15px; top: 50%;
+            transform: translateY(-50%); color: var(--text-secondary); font-weight: 500;
         }
 
         .input-field:focus {
@@ -134,86 +108,57 @@
             flex-direction: column;
             border-left: 1px solid var(--border-color);
             padding-left: 40px;
-            opacity: 0.3;
-            transform: translateY(10px);
+            opacity: 0.3; transform: translateY(10px);
             transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
         }
         
-        .display-panel.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .display-panel.active { opacity: 1; transform: translateY(0); }
 
-        .primary-result .label {
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
+        .primary-result { margin-bottom: 20px; }
+        .primary-result .label { font-size: 1rem; color: var(--text-secondary); margin-bottom: 5px; }
+        .primary-result .value { font-size: 5.5rem; font-weight: 900; color: var(--accent-primary); line-height: 1; }
+        
+        .tertiary-result { margin-bottom: 20px; }
+        .tertiary-result .label { font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .tertiary-result .value { font-size: 2.5rem; font-weight: 700; color: var(--accent-secondary); line-height: 1.1; }
+        .tertiary-result .value .usd-value { font-size: 1.25rem; color: var(--text-secondary); margin-left: 10px; }
 
-        .primary-result .value {
-            font-size: 6rem;
-            font-weight: 900;
-            color: var(--accent-primary);
-            line-height: 1;
-        }
+        .secondary-result { margin-bottom: 20px; }
+        .secondary-result .label { font-size: 0.9rem; color: var(--text-secondary); }
+        .secondary-result .value { font-size: 1.5rem; color: var(--accent-secondary); font-weight: 700; margin-left: 10px; }
 
-        .secondary-result .label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .secondary-result .value {
-            font-size: 1.5rem;
-            color: var(--accent-secondary);
-            font-weight: 700;
-            margin-left: 10px;
-        }
-
+        /* --- SCROLLING FIX & BREAKDOWN STYLING --- */
         .bet-breakdown-wrapper {
-            flex-grow: 1;
-            margin-top: 25px;
-            min-height: 200px; /* Crucial for flexbox to constrain the child */
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* Hide overflow here */
+            flex-grow: 1; /* Allow wrapper to fill available vertical space */
+            display: flex; flex-direction: column;
+            min-height: 0; /* Critical for flexbox scrolling context */
         }
 
         .bet-breakdown-wrapper .label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem; color: var(--text-secondary);
+            padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0; /* Prevent label from shrinking */
         }
 
         #betBreakdown {
             list-style: none;
             overflow-y: auto; /* Enable scrolling on this element */
-            height: 100%;
+            flex-grow: 1; /* Allow list to take up the space calculated by the wrapper */
             padding-right: 15px;
         }
 
         #betBreakdown li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            font-size: 0.95rem;
-            border-bottom: 1px solid #1a1a1e;
-            opacity: 0;
-            transform: translateX(15px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; font-size: 0.95rem; border-bottom: 1px solid #1a1a1e;
+            opacity: 0; transform: translateX(15px);
             animation: listItemFadeIn 0.5s ease forwards;
         }
 
-        @keyframes listItemFadeIn {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
+        @keyframes listItemFadeIn { to { opacity: 1; transform: translateX(0); } }
         
         #betBreakdown li .bet-num { color: var(--text-secondary); }
         #betBreakdown li .bet-val { color: var(--text-primary); font-weight: 500; text-align: right; }
         #betBreakdown li .bet-val .usd-value { font-size: 0.85rem; color: var(--text-secondary); display: block; }
-
 
         /* --- SCROLLBAR STYLING --- */
         ::-webkit-scrollbar { width: 8px; }
@@ -223,10 +168,11 @@
 
         /* --- RESPONSIVE DESIGN --- */
         @media (max-width: 800px) {
-            body { align-items: flex-start; padding: 20px; }
-            .chancellor-console { grid-template-columns: 1fr; padding: 20px; max-height: none; }
+            body { align-items: flex-start; padding: 20px; height: auto; }
+            .chancellor-console { grid-template-columns: 1fr; padding: 20px; max-height: none; height: auto; }
             .display-panel { border-left: none; border-top: 1px solid var(--border-color); padding-left: 0; padding-top: 30px; }
             .primary-result .value { font-size: 4rem; }
+            .tertiary-result .value { font-size: 2rem; }
         }
     </style>
 </head>
@@ -234,63 +180,25 @@
 
     <div class="chancellor-console">
         <div class="controls">
-            <div class="form-group">
-                <label for="btcPrice">Bitcoin Price (USD)</label>
-                <div class="input-wrapper">
-                    <span class="symbol">$</span>
-                    <input type="text" id="btcPrice" class="input-field" value="110000">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="startAmount">Starting Amount (mBTC)</label>
-                <div class="input-wrapper">
-                    <span class="symbol">₿</span>
-                    <input type="text" id="startAmount" class="input-field" value="1">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="currentAmount">Current Amount (mBTC)</label>
-                 <div class="input-wrapper">
-                    <span class="symbol">₿</span>
-                    <input type="text" id="currentAmount" class="input-field" placeholder="Enter current progress...">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="targetAmount">Target Amount (mBTC)</label>
-                 <div class="input-wrapper">
-                    <span class="symbol">₿</span>
-                    <input type="text" id="targetAmount" class="input-field" value="300">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="percentIncrease">Compounding Win % Per Bet</label>
-                <div class="input-wrapper">
-                    <input type="text" id="percentIncrease" class="input-field percent-input" value="10">
-                    <span class="percent-symbol">%</span>
-                </div>
-            </div>
+            <div class="form-group"><label for="btcPrice">Bitcoin Price (USD)</label><div class="input-wrapper"><span class="symbol">$</span><input type="text" id="btcPrice" class="input-field" value="110,000"></div></div>
+            <div class="form-group"><label for="startAmount">Starting Amount (mBTC)</label><div class="input-wrapper"><span class="symbol">₿</span><input type="text" id="startAmount" class="input-field" value="1"></div></div>
+            <div class="form-group"><label for="currentAmount">Current Amount (mBTC)</label><div class="input-wrapper"><span class="symbol">₿</span><input type="text" id="currentAmount" class="input-field" placeholder="Enter current progress..."></div></div>
+            <div class="form-group"><label for="targetAmount">Target Amount (mBTC)</label><div class="input-wrapper"><span class="symbol">₿</span><input type="text" id="targetAmount" class="input-field" value="300"></div></div>
+            <div class="form-group"><label for="percentIncrease">Compounding Win % Per Bet</label><div class="input-wrapper"><input type="text" id="percentIncrease" class="input-field percent-input" value="10"><span class="percent-symbol">%</span></div></div>
         </div>
 
         <div id="displayPanel" class="display-panel">
-            <div class="primary-result">
-                <div class="label">SUCCESSIVE WINS REQUIRED</div>
-                <div id="totalBets" class="value">...</div>
-            </div>
-            <div class="secondary-result">
-                <span class="label">Wins Already Achieved:</span>
-                <span id="betsWon" class="value">...</span>
-            </div>
+            <div class="primary-result"><div class="label">SUCCESSIVE WINS REQUIRED</div><div id="totalBets" class="value">...</div></div>
+            <div class="tertiary-result"><div class="label">NEXT WIN PROFIT (TO WIN)</div><div id="nextProfitDisplay" class="value">...</div></div>
+            <div class="secondary-result"><span class="label">Wins Already Achieved:</span><span id="betsWon" class="value">...</span></div>
             <div class="bet-breakdown-wrapper">
                 <div class="label">Projected Growth Path</div>
-                <ul id="betBreakdown">
-                    <!-- JS populates this -->
-                </ul>
+                <ul id="betBreakdown"></ul>
             </div>
         </div>
     </div>
 
 <script>
-    // --- ASSET INITIALIZATION ---
     const btcPriceInput = document.getElementById('btcPrice');
     const startAmountInput = document.getElementById('startAmount');
     const currentAmountInput = document.getElementById('currentAmount');
@@ -299,12 +207,12 @@
 
     const displayPanel = document.getElementById('displayPanel');
     const totalBetsDisplay = document.getElementById('totalBets');
+    const nextProfitDisplay = document.getElementById('nextProfitDisplay');
     const betsWonDisplay = document.getElementById('betsWon');
     const betBreakdownList = document.getElementById('betBreakdown');
 
     const inputs = [btcPriceInput, startAmountInput, currentAmountInput, targetAmountInput, percentIncreaseInput];
 
-    // --- CORE CALCULATION ENGINE ---
     function calculateAndDisplay() {
         const btcPrice = parseFloat(btcPriceInput.value.replace(/,/g, '')) || 0;
         const startAmount = parseFloat(startAmountInput.value) || 0;
@@ -320,21 +228,21 @@
         displayPanel.classList.add('active');
         const rate = percentIncrease / 100;
 
-        // 1. Calculate bets required to reach target
-        let betsToTarget = 0;
-        if (currentAmount < targetAmount) {
-            betsToTarget = Math.ceil(Math.log(targetAmount / currentAmount) / Math.log(1 + rate));
-        }
+        // Calculate bets to target
+        let betsToTarget = (currentAmount < targetAmount) ? Math.ceil(Math.log(targetAmount / currentAmount) / Math.log(1 + rate)) : 0;
         totalBetsDisplay.textContent = isFinite(betsToTarget) ? betsToTarget : '...';
 
-        // 2. Calculate bets already won
-        let betsWon = 0;
-        if (startAmount > 0 && currentAmount > startAmount) {
-            betsWon = Math.round(Math.log(currentAmount / startAmount) / Math.log(1 + rate));
-        }
+        // Calculate next profit
+        const nextProfitMbtc = currentAmount * rate;
+        const nextProfitUsd = nextProfitMbtc * (btcPrice / 1000);
+        const formattedProfitMbtc = nextProfitMbtc.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const formattedProfitUsd = nextProfitUsd.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        nextProfitDisplay.innerHTML = `${formattedProfitMbtc} mBTC <span class="usd-value">${formattedProfitUsd}</span>`;
+
+        // Calculate bets won
+        let betsWon = (startAmount > 0 && currentAmount > startAmount) ? Math.round(Math.log(currentAmount / startAmount) / Math.log(1 + rate)) : 0;
         betsWonDisplay.textContent = isFinite(betsWon) ? betsWon : '0';
 
-        // 3. Generate the bet breakdown with dual currency
         generateBreakdown(currentAmount, rate, betsToTarget, btcPrice);
     }
     
@@ -342,28 +250,21 @@
         betBreakdownList.innerHTML = '';
         const mbtcToUsd = (mbtc) => mbtc * (btcPrice / 1000);
 
-        if (steps === 0 || !isFinite(steps) || steps > 500) {
-            if (steps > 500) {
-                const li = document.createElement('li');
-                li.innerHTML = `<span class="bet-num">Path exceeds 500 steps.</span> <span class="bet-val">Display truncated.</span>`;
-                betBreakdownList.appendChild(li);
-            }
+        if (!isFinite(steps) || steps <= 0) { return; }
+        if (steps > 500) {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="bet-num">Path exceeds 500 steps.</span><span class="bet-val">Display truncated.</span>`;
+            betBreakdownList.appendChild(li);
             return;
         }
         
         let accumulatedValue = current;
         for (let i = 1; i <= steps; i++) {
             accumulatedValue *= (1 + rate);
-            const usdEquivalent = mbtcToUsd(accumulatedValue);
-
             const formattedMbtc = accumulatedValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            const formattedUsd = usdEquivalent.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-
+            const formattedUsd = mbtcToUsd(accumulatedValue).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             const li = document.createElement('li');
-            li.innerHTML = `
-                <span class="bet-num">Bet ${i}</span> 
-                <span class="bet-val">${formattedMbtc} mBTC <span class="usd-value">${formattedUsd}</span></span>
-            `;
+            li.innerHTML = `<span class="bet-num">Bet ${i}</span><span class="bet-val">${formattedMbtc} mBTC<span class="usd-value">${formattedUsd}</span></span>`;
             li.style.animationDelay = `${i * 0.03}s`;
             betBreakdownList.appendChild(li);
         }
@@ -372,34 +273,26 @@
     function resetDisplays() {
         displayPanel.classList.remove('active');
         totalBetsDisplay.textContent = '...';
+        nextProfitDisplay.textContent = '...';
         betsWonDisplay.textContent = '...';
         betBreakdownList.innerHTML = '';
     }
     
-    // --- INPUT FORMATTING & EVENT LISTENERS ---
     function formatNumericInput(e) {
         let value = e.target.value;
         let originalCursor = e.target.selectionStart;
         let numCommasBefore = (value.match(/,/g) || []).length;
-        
         let numericValue = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
         
-        if (e.target.id === 'btcPrice' && numericValue.includes('.')) {
-             // For currency, split and format integer part only
+        if (e.target.id === 'btcPrice') {
              const parts = numericValue.split('.');
              parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
              numericValue = parts.join('.');
-        } else if (e.target.id !== 'btcPrice') {
-             // For mBTC and percent, don't add commas
-        } else {
-             numericValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
         e.target.value = numericValue;
-        
         let numCommasAfter = (numericValue.match(/,/g) || []).length;
-        let cursorOffset = numCommasAfter - numCommasBefore;
-        e.target.setSelectionRange(originalCursor + cursorOffset, originalCursor + cursorOffset);
+        e.target.setSelectionRange(originalCursor + (numCommasAfter - numCommasBefore), originalCursor + (numCommasAfter - numCommasBefore));
     }
 
     inputs.forEach(input => {
@@ -409,14 +302,10 @@
         });
     });
 
-    // --- INITIAL EXECUTION ---
     document.addEventListener('DOMContentLoaded', () => {
-        // Run formatting on default values
         inputs.forEach(input => formatNumericInput({ target: input }));
-        // Initial state is blank as per directive
         resetDisplays();
     });
-
 </script>
 </body>
 </html>
