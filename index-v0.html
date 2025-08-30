@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Bet Calculator</title>
+    <style>
+        /* --- CORE STYLES & AESTHETICS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+
+        :root {
+            --background-color: #0a0a0c;
+            --console-background: #121216;
+            --input-background: #08080a;
+            --text-primary: #e1e1e1;
+            --text-secondary: #8a8a92;
+            --accent-primary: #00b8ff;
+            --accent-secondary: #ffffff;
+            --border-color: #2a2a30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            overflow: hidden;
+        }
+
+        /* --- MAIN CONSOLE STYLING --- */
+        .chancellor-console {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            max-height: 95vh;
+            background: var(--console-background);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- INPUTS & CONTROLS SECTION --- */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .symbol {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .input-field {
+            width: 100%;
+            background: var(--input-background);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            padding-left: 35px; /* Space for symbol */
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .input-field.percent-input {
+            padding-left: 15px; /* No symbol for percent */
+            padding-right: 35px;
+        }
+        .input-wrapper .percent-symbol {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+
+        .input-field:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 184, 255, 0.2);
+        }
+
+        /* --- RESULTS & DISPLAY SECTION --- */
+        .display-panel {
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+            padding-left: 40px;
+        }
+
+        .primary-result {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        
+        .primary-result .label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .primary-result .value {
+            font-size: 6rem;
+            font-weight: 900;
+            color: var(--accent-primary);
+            line-height: 1;
+            letter-spacing: -2px;
+            transition: color 0.3s ease;
+        }
+        
+        .primary-result .value.zero {
+             color: var(--text-secondary);
+        }
+
+        .secondary-result {
+             margin-bottom: 25px;
+        }
+
+        .secondary-result .label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .secondary-result .value {
+            font-size: 1.5rem;
+            color: var(--accent-secondary);
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .bet-breakdown-wrapper {
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bet-breakdown-wrapper .label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #betBreakdown {
+            list-style: none;
+            overflow-y: auto;
+            padding-right: 15px; /* for scrollbar spacing */
+        }
+
+        #betBreakdown li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #1a1a1e;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: listItemFadeIn 0.5s ease forwards;
+        }
+
+        @keyframes listItemFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        #betBreakdown li .bet-num {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        #betBreakdown li .bet-val {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* --- SCROLLBAR STYLING --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--input-background);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 800px) {
+            body {
+                align-items: flex-start;
+                padding: 20px;
+            }
+            .chancellor-console {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                max-height: none;
+            }
+            .display-panel {
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+                padding-left: 0;
+                padding-top: 30px;
+            }
+            .primary-result .value {
+                font-size: 4rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="chancellor-console">
+        <div class="controls">
+            <div class="form-group">
+                <label for="startAmount">Starting Amount (USD or mBTC)</label>
+                <div class="input-wrapper">
+                    <span class="symbol">$</span>
+                    <input type="text" id="startAmount" class="input-field" placeholder="e.g., 1500.00" value="1000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="currentAmount">Current Amount (USD or mBTC)</label>
+                 <div class="input-wrapper">
+                    <span class="symbol">$</span>
+                    <input type="text" id="currentAmount" class="input-field" placeholder="e.g., 5000.00" value="5000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="targetAmount">Target Amount</label>
+                 <div class="input-wrapper">
+                    <span class="symbol">$</span>
+                    <input type="text" id="targetAmount" class="input-field" placeholder="e.g., 30000.00" value="30000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="percentIncrease">Compounding Win % Per Bet</label>
+                <div class="input-wrapper">
+                    <input type="text" id="percentIncrease" class="input-field percent-input" placeholder="e.g., 10" value="10">
+                    <span class="percent-symbol">%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="display-panel">
+            <div class="primary-result">
+                <div class="label">SUCCESSIVE WINS REQUIRED</div>
+                <div id="totalBets" class="value">0</div>
+            </div>
+            <div class="secondary-result">
+                <span class="label">Wins Already Achieved:</span>
+                <span id="betsWon" class="value">0</span>
+            </div>
+            <div class="bet-breakdown-wrapper">
+                <div class="label">Projected Growth Path</div>
+                <ul id="betBreakdown">
+                    <!-- JS will populate this -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- ASSET INITIALIZATION ---
+        const startAmountInput = document.getElementById('startAmount');
+        const currentAmountInput = document.getElementById('currentAmount');
+        const targetAmountInput = document.getElementById('targetAmount');
+        const percentIncreaseInput = document.getElementById('percentIncrease');
+
+        const totalBetsDisplay = document.getElementById('totalBets');
+        const betsWonDisplay = document.getElementById('betsWon');
+        const betBreakdownList = document.getElementById('betBreakdown');
+
+        const inputs = [startAmountInput, currentAmountInput, targetAmountInput, percentIncreaseInput];
+
+        // --- CORE CALCULATION ENGINE ---
+        function calculateAndDisplay() {
+            const startAmount = parseFloat(startAmountInput.value) || 0;
+            const currentAmount = parseFloat(currentAmountInput.value) || 0;
+            const targetAmount = parseFloat(targetAmountInput.value) || 0;
+            const percentIncrease = parseFloat(percentIncreaseInput.value) || 0;
+
+            if (currentAmount <= 0 || targetAmount <= 0 || percentIncrease <= 0) {
+                resetDisplays();
+                return;
+            }
+
+            const rate = percentIncrease / 100;
+
+            // 1. Calculate bets required to reach target
+            let betsToTarget = 0;
+            if (currentAmount < targetAmount) {
+                betsToTarget = Math.ceil(Math.log(targetAmount / currentAmount) / Math.log(1 + rate));
+            }
+            
+            totalBetsDisplay.textContent = isFinite(betsToTarget) ? betsToTarget : '...';
+            totalBetsDisplay.classList.toggle('zero', betsToTarget === 0);
+
+            // 2. Calculate bets already won
+            let betsWon = 0;
+            if (startAmount > 0 && currentAmount > startAmount) {
+                betsWon = Math.round(Math.log(currentAmount / startAmount) / Math.log(1 + rate));
+            }
+            betsWonDisplay.textContent = isFinite(betsWon) ? betsWon : '0';
+
+            // 3. Generate and display the bet breakdown
+            generateBreakdown(currentAmount, rate, betsToTarget);
+        }
+        
+        function generateBreakdown(current, rate, steps) {
+            betBreakdownList.innerHTML = '';
+            if (steps === 0 || !isFinite(steps) || steps > 500) { // Safety break for performance
+                 if (steps > 500) {
+                     const li = document.createElement('li');
+                     li.innerHTML = `<span class="bet-num">Path exceeds 500 steps.</span> <span class="bet-val">Display truncated.</span>`;
+                     betBreakdownList.appendChild(li);
+                 }
+                return;
+            }
+            
+            let accumulatedValue = current;
+            for (let i = 1; i <= steps; i++) {
+                accumulatedValue *= (1 + rate);
+                const li = document.createElement('li');
+                
+                // Format with commas and 2 decimal points
+                const formattedValue = accumulatedValue.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                li.innerHTML = `<span class="bet-num">Bet ${i}</span> <span class="bet-val">${formattedValue}</span>`;
+                li.style.animationDelay = `${i * 0.03}s`; // Staggered animation
+                betBreakdownList.appendChild(li);
+            }
+        }
+
+        function resetDisplays() {
+            totalBetsDisplay.textContent = '0';
+            totalBetsDisplay.classList.add('zero');
+            betsWonDisplay.textContent = '0';
+            betBreakdownList.innerHTML = '';
+        }
+        
+        // --- INPUT FORMATTING & EVENT LISTENERS ---
+        function formatInput(e) {
+            // Allow only numbers and one decimal point
+            let value = e.target.value;
+            e.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                formatInput(e);
+                calculateAndDisplay();
+            });
+        });
+
+        // --- INITIAL EXECUTION ---
+        document.addEventListener('DOMContentLoaded', calculateAndDisplay);
+
+    </script>
+</body>
+</html>
