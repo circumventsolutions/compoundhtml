@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strategic Growth Projector</title>
     <style>
-        /* --- CORE STYLES & AESTHETICS (VALERIAN STANDARD V4) --- */
+        /* --- CORE STYLES & AESTHETICS (VALERIAN STANDARD V5) --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
 
         :root {
@@ -32,14 +32,15 @@
         /* --- MAIN CONSOLE STYLING --- */
         .chancellor-console {
             width: 100%; max-width: 950px;
-            height: 680px; /* Define a fixed height for consistent layout */
-            max-height: 95vh; background: var(--console-background);
+            height: 680px; max-height: 95vh;
+            background: var(--console-background);
             border: 1px solid var(--border-color); border-radius: 12px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             padding: 40px; display: grid;
             grid-template-columns: 1fr 1.5fr; gap: 40px;
             overflow: hidden; opacity: 0; transform: translateY(20px);
             animation: fadeInConsole 0.8s ease-out forwards;
+            transition: height 0.3s ease;
         }
 
         @keyframes fadeInConsole { to { opacity: 1; transform: translateY(0); } }
@@ -73,15 +74,13 @@
             box-shadow: 0 0 0 3px rgba(0, 184, 255, 0.2);
         }
 
-        /* --- SCROLLING FIX: CSS GRID IMPLEMENTATION --- */
+        /* --- DISPLAY PANEL & SCROLLING ARCHITECTURE --- */
         .display-panel {
-            display: grid; /* Use Grid for explicit layout control */
-            grid-template-rows: auto auto auto 1fr; /* Rows for each section, last one fills space */
-            gap: 20px; /* Space between grid rows */
-            border-left: 1px solid var(--border-color); padding-left: 40px;
-            opacity: 0.3; transform: translateY(10px);
+            display: grid; grid-template-rows: auto auto auto 1fr;
+            gap: 20px; border-left: 1px solid var(--border-color);
+            padding-left: 40px; opacity: 0.3; transform: translateY(10px);
             transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
-            overflow: hidden; /* Prevent parent from overflowing */
+            overflow: hidden;
         }
         .display-panel.active { opacity: 1; transform: translateY(0); }
 
@@ -95,23 +94,12 @@
         .secondary-result .label { font-size: 0.9rem; color: var(--text-secondary); }
         .secondary-result .value { font-size: 1.5rem; color: var(--accent-secondary); font-weight: 700; margin-left: 10px; }
 
-        .bet-breakdown-wrapper {
-            display: flex; flex-direction: column;
-            min-height: 0; /* Critical for child elements to respect this container's bounds */
-        }
-
+        .bet-breakdown-wrapper { display: flex; flex-direction: column; min-height: 0; }
         .bet-breakdown-wrapper .label {
             font-size: 0.9rem; color: var(--text-secondary);
-            padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0;
+            padding-bottom: 10px; border-bottom: 1px solid var(--border-color); flex-shrink: 0;
         }
-
-        #betBreakdown {
-            list-style: none;
-            overflow-y: auto; /* Enable scrolling on this element */
-            padding-right: 15px; /* Space for scrollbar */
-        }
-
+        #betBreakdown { list-style: none; overflow-y: auto; padding-right: 15px; }
         #betBreakdown li {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 0; font-size: 0.95rem; border-bottom: 1px solid #1a1a1e;
@@ -119,7 +107,6 @@
             animation: listItemFadeIn 0.5s ease forwards;
         }
         @keyframes listItemFadeIn { to { opacity: 1; transform: translateX(0); } }
-        
         #betBreakdown li .bet-num { color: var(--text-secondary); }
         #betBreakdown li .bet-val { color: var(--text-primary); font-weight: 500; text-align: right; }
         #betBreakdown li .bet-val .usd-value { font-size: 0.85rem; color: var(--text-secondary); display: block; }
@@ -130,13 +117,31 @@
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
-        /* --- RESPONSIVE DESIGN --- */
-        @media (max-width: 800px) {
-            body { align-items: flex-start; padding: 20px; height: auto; }
-            .chancellor-console { grid-template-columns: 1fr; padding: 20px; max-height: none; height: auto; }
-            .display-panel { border-left: none; border-top: 1px solid var(--border-color); padding-left: 0; padding-top: 30px; }
+        /* --- RESPONSIVE DESIGN FOR MOBILE VIEWPORTS --- */
+        @media (max-width: 900px) {
+            html, body {
+                align-items: flex-start; /* Align to top */
+                overflow-y: auto; /* Allow vertical scroll for the whole page */
+                padding: 15px;
+            }
+            .chancellor-console {
+                grid-template-columns: 1fr; /* Stack to single column */
+                height: auto; /* Allow height to be determined by content */
+                max-height: none;
+                padding: 25px;
+                gap: 30px;
+            }
+            .display-panel {
+                border-left: none; /* Remove vertical separator */
+                border-top: 1px solid var(--border-color); /* Add horizontal separator */
+                padding-left: 0;
+                padding-top: 30px;
+            }
             .primary-result .value { font-size: 4rem; }
             .tertiary-result .value { font-size: 2rem; }
+            #betBreakdown {
+                max-height: 40vh; /* Set a max height for the list to prevent excessive page length */
+            }
         }
     </style>
 </head>
